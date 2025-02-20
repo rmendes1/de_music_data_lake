@@ -1,0 +1,53 @@
+{
+  "albums": {
+    "fields": [
+      {"name": "album_id", "type": "long", "nullable": true},
+      {"name": "album_title", "type": "string", "nullable": true},
+      {"name": "artist_id", "type": "long", "nullable": true},
+      {"name": "release_date", "type": "date", "nullable": true},
+      {"name": "link", "type": "string", "nullable": true},
+      {"name": "cover", "type": "string", "nullable": true},
+      {"name": "created_at", "type": "timestamp", "nullable": true},
+      {"name": "updated_at", "type": "timestamp", "nullable": true}
+    ]
+  },
+  "albums_genres": {
+    "fields": [
+      {"name": "album_id", "type": "long", "nullable": true},
+      {"name": "genre_id", "type": "long", "nullable": true}
+    ]
+  },
+  "artists": {
+    "fields": [
+      {"name": "artist_id", "type": "long", "nullable": true},
+      {"name": "artist_name", "type": "string", "nullable": true},
+      {"name": "link", "type": "string", "nullable": true},
+      {"name": "followers", "type": "integer", "nullable": true},
+      {"name": "photo", "type": "string", "nullable": true},
+      {"name": "created_at", "type": "timestamp", "nullable": true},
+      {"name": "updated_at", "type": "timestamp", "nullable": true}
+    ]
+  },
+  "genres": {
+    "fields": [
+      {"name": "genre_id", "type": "long", "nullable": true},
+      {"name": "genre_name", "type": "string", "nullable": true},
+      {"name": "picture_link", "type": "string", "nullable": true},
+      {"name": "created_at", "type": "timestamp", "nullable": true},
+      {"name": "updated_at", "type": "timestamp", "nullable": true}
+    ]
+  },
+  "tracks": {
+    "fields": [
+      {"name": "track_id", "type": "long", "nullable": true},
+      {"name": "track_title", "type": "string", "nullable": true},
+      {"name": "album_id", "type": "long", "nullable": true},
+      {"name": "artist_id", "type": "long", "nullable": true},
+      {"name": "duration", "type": "integer", "nullable": true},
+      {"name": "link", "type": "string", "nullable": true},
+      {"name": "preview", "type": "string", "nullable": true},
+      {"name": "created_at", "type": "timestamp", "nullable": true},
+      {"name": "updated_at", "type": "timestamp", "nullable": true}
+    ]
+  }
+}

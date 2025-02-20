@@ -1,0 +1,15 @@
+{
+  "name": "music_data-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "",
+    "database.port": "",
+    "database.user": "",
+    "database.password": "",
+    "database.dbname": "music_data",
+    "database.server.name": "postgres",
+    "include.before.state": "required",
+    "table.include.list": "public.artists, public.albums, public.tracks, public.genres, public.albums_genres"
+  }
+}
