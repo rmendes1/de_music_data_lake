@@ -1,0 +1,9 @@
+ipython
+pandas
+pyarrow
+numpy
+pyspark
+google-cloud-storage
+kafka-python
+psycopg2
+delta-spark
