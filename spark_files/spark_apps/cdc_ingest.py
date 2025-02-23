@@ -1,16 +1,16 @@
 from pyspark.sql import SparkSession
 import logging
+import json
 from config import GCS_BUCKET
 from pyspark.sql.types import StructType, StructField, StringType
 from pyspark.sql.functions import from_json, col
 
 from manage_offset import load_last_offset, save_last_offset
-from utils import get_schema_for_topic
+from utils import convert_debezium_schema_to_spark
 
 # Configura o logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 # Inicializa a sessão do Spark
 spark = SparkSession.builder.appName("CDC Batch Ingestion").getOrCreate()
@@ -19,7 +19,7 @@ spark.sparkContext.setLogLevel("ERROR")
 # Tópicos e partições a serem processados
 topics = [
     "postgres.public.albums",
-    # "postgres.public.albums_genres",
+    "postgres.public.albums_genres",
     "postgres.public.artists",
     "postgres.public.genres",
     "postgres.public.tracks",
@@ -36,7 +36,6 @@ for topic in topics:
     logger.info(f"Último offset carregado para {topic}: {last_offset}")
 
     # Configurações do Kafka
-
     kafka_options = {
         "kafka.bootstrap.servers": "kafka:9092",
         "subscribe": topic,
@@ -52,45 +51,46 @@ for topic in topics:
 
     # Processa as mensagens
     if df.count() > 0:
-        logger.info(f"Pegando schema para topico: {topic.split('.')[-1]}")
-        try:
-            schema = StructType(
-                [
-                    StructField(
-                        "payload",
-                        StructType(
-                            [
-                                StructField("before", get_schema_for_topic(topic.split(".")[-1])),
-                                StructField("after", get_schema_for_topic(topic.split(".")[-1])),
-                                StructField("ts_ms", StringType()),
-                                StructField("op", StringType()),
-                            ]
-                        ),
-                    )
-                ]
-            )
-        except ValueError as e:
-            logger.error(f"Error loading schema for topic {topic}: {e}")
-            continue
 
-        cdc_df = df.selectExpr("CAST(value AS STRING) as json").select(from_json(col("json"), schema).alias("data"))
+        # Converte a coluna `value` para string
+        df = df.select(col("offset"), col("value").cast("string").alias("value"))
+
+        # Define um schema básico para extrair o schema e o payload da mensagem
+        message_schema = StructType(
+            [StructField("schema", StringType(), True), StructField("payload", StringType(), True)]
+        )
+
+        # Aplica o message_schema para extrair as chaves "schema" e "payload"
+        df = df.select(col("offset"), from_json(col("value"), message_schema).alias("data"))
+
+        # Extrai o schema da mensagem
+        schema_json = df.select("data.schema").head()[0]
+
+        # Converte o schema JSON para um dicionário Python
+        debezium_schema = json.loads(schema_json)
+
+        # Converte o schema do Debezium para o formato do Spark
+        spark_schema = convert_debezium_schema_to_spark(debezium_schema)
+
+        # Aplica o schema ao payload
+        df = df.select(col("offset"), from_json(col("data.payload"), spark_schema).alias("payload"))
 
         logger.info("Schema de cdc_df: \n")
-        cdc_df.printSchema()
+        df.printSchema()
+        logger.info(f"Count: {df.count()}")
 
         logger.info(f"cdc_df para {topic}:")
-        # cdc_df.show(n=1, truncate=False, vertical=True)
-        # logger.info(cdc_df.select("data.payload").show(n=1, truncate=False, vertical=True))
+        df.show(n=3, truncate=False, vertical=True)
 
-        cdc_unified_df = cdc_df.selectExpr(
+        cdc_unified_df = df.selectExpr(
             """
-                        CASE
-                            WHEN data.payload.op = 'd' THEN data.payload.before
-                            ELSE data.payload.after
-                        END AS payload
-                        """,
-            "data.payload.op AS operation",
-            "data.payload.ts_ms",
+                CASE
+                    WHEN payload.op = 'd' THEN payload.before
+                    ELSE payload.after
+                END AS payload
+            """,
+            "payload.op AS operation",
+            "payload.ts_ms",
         ).select("payload.*", "operation", "ts_ms")
 
         # Calcula o número de registros para cada tipo de operação
