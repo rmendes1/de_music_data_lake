@@ -1,0 +1,59 @@
+{
+    "fields": [
+      {
+        "metadata": {},
+        "name": "artist_id",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "artist_name",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "link",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "followers",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "photo",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "created_at",
+        "nullable": true,
+        "type": "timestamp"
+      },
+      {
+        "metadata": {},
+        "name": "updated_at",
+        "nullable": true,
+        "type": "timestamp"
+      },
+      {
+        "metadata": {},
+        "name": "operation",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "ts_ms",
+        "nullable": true,
+        "type": "string"
+      }
+    ],
+    "type": "struct"
+  }
