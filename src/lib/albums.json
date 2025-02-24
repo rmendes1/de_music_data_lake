@@ -22,7 +22,7 @@
         "metadata": {},
         "name": "release_date",
         "nullable": true,
-        "type": "date"
+        "type": "integer"
       },
       {
         "metadata": {},
@@ -40,13 +40,13 @@
         "metadata": {},
         "name": "created_at",
         "nullable": true,
-        "type": "timestamp"
+        "type": "long"
       },
       {
         "metadata": {},
         "name": "updated_at",
         "nullable": true,
-        "type": "timestamp"
+        "type": "long"
       },
       {
         "metadata": {},
@@ -58,7 +58,7 @@
         "metadata": {},
         "name": "ts_ms",
         "nullable": true,
-        "type": "string"
+        "type": "long"
       }
     ],
     "type": "struct"

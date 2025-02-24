@@ -22,7 +22,7 @@
         "metadata": {},
         "name": "ts_ms",
         "nullable": true,
-        "type": "string"
+        "type": "long"
       }
     ],
     "type": "struct"
