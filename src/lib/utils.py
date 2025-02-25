@@ -1,6 +1,7 @@
 from pyspark.sql import types
 import json
 
+dbutils = DBUtils(spark)
 
 def table_exists(spark, catalog, schema, table):
     count = (
