@@ -1,19 +1,25 @@
-from pyspark.sql import types
-import json
+from pyspark.sql.functions import expr
 
 
-def table_exists(spark, catalog, schema, table):
-    count = (
-        spark.sql(f"SHOW TABLES FROM {catalog}.{schema}").filter(f"database='{schema}' AND tableName='{table}'").count()
-    )
-    return count == 1
+def transform_generic(df):
+    """Transformação genérica: converte ts_ms para timestamp, se existir."""
+    if "ts_ms" in df.columns:
+        df = df.withColumn("ts_ms", expr("from_unixtime(ts_ms / 1000)"))
+    return df
 
 
-def import_schema(tablename):
-    with open(
-        f"/Workspace/Users/{dbutils.widgets.get('account')}/music_data_lake/src/lib/{tablename}.json", "r"
-    ) as open_file:
-        schema_json = json.load(open_file)
+def transform_types_music_data_schema(df):
+    if "release_date" in df.columns:
+        df = df.withColumn("release_date", expr("DATE_FROM_UNIX_DATE(release_date)"))
+    if set(["created_at", "updated_at"]).issubset(df.columns):
+        df = df.withColumn("created_at", expr("from_unixtime(created_at / 1e6)")) \
+               .withColumn("updated_at", expr("from_unixtime(updated_at / 1e6)"))
+    df = transform_generic(df)
+    return df
 
-    schema_df = types.StructType.fromJson(schema_json)
-    return schema_df
+
+# Mapeia tabelas para funções de transformação específicas
+TRANSFORMATIONS = {
+    "music_data": transform_types_music_data_schema,
+    "others": transform_generic
+}
