@@ -112,3 +112,11 @@ ALTER COLUMN genre_id TYPE BIGINT;
 ALTER TABLE Albums_Genres
 ALTER COLUMN album_id TYPE BIGINT,
 ALTER COLUMN genre_id TYPE BIGINT;
+
+-- Removendo PK composta para adicionar id serial
+ALTER TABLE Albums_Genres ADD COLUMN id SERIAL;
+ALTER TABLE Albums_Genres DROP CONSTRAINT albums_genres_pkey;
+ALTER TABLE Albums_Genres ADD PRIMARY KEY (id);
+
+-- Para atualizar as Kafka Messages com a coluna nova
+UPDATE Albums_Genres SET id = id WHERE id IS NOT NULL;
