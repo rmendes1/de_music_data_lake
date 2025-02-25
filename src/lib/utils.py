@@ -11,7 +11,7 @@ def table_exists(spark, catalog, schema, table):
 
 def import_schema(tablename):
     with open(
-        f"/Workspace/Users/mydatabrickstestacc@gmail.com/music_data_lake/src/lib/{tablename}.json", "r"
+        f"/Workspace/Users/{dbutils.widgets.get('account')}/music_data_lake/src/lib/{tablename}.json", "r"
     ) as open_file:
         schema_json = json.load(open_file)
 
