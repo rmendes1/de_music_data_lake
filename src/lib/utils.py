@@ -1,9 +1,6 @@
 from pyspark.sql import types
 import json
-from pyspark.dbutils import DBUtils
 
-
-dbutils = DBUtils(spark)
 
 def table_exists(spark, catalog, schema, table):
     count = (
@@ -12,7 +9,9 @@ def table_exists(spark, catalog, schema, table):
     return count == 1
 
 
-def import_schema(tablename):
+def import_schema(tablename, spark):
+    from pyspark.dbutils import DBUtils
+    dbutils = DBUtils(spark)
     with open(
         f"/Workspace/Users/{dbutils.widgets.get('account')}/music_data_lake/src/lib/{tablename}.json", "r"
     ) as open_file:
