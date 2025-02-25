@@ -21,9 +21,6 @@ def transform_types_music_data_schema(df):
 
 # Mapeia tabelas para funções de transformação específicas
 TRANSFORMATIONS = {
-    "music_data": {
-        "albums_genres": transform_albums_genres,
-        "artists": transform_artists
-    },
+    "music_data": transform_types_music_data_schema,
     "others": transform_generic  # Fallback para tabelas sem regra específica
 }
