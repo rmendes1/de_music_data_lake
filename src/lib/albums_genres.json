@@ -1,29 +1,35 @@
 {
-    "fields": [
-      {
-        "metadata": {},
-        "name": "album_id",
-        "nullable": true,
-        "type": "long"
-      },
-      {
-        "metadata": {},
-        "name": "genre_id",
-        "nullable": true,
-        "type": "long"
-      },
-      {
-        "metadata": {},
-        "name": "operation",
-        "nullable": true,
-        "type": "string"
-      },
-      {
-        "metadata": {},
-        "name": "ts_ms",
-        "nullable": true,
-        "type": "long"
-      }
-    ],
-    "type": "struct"
-  }
+  "fields": [
+    {
+      "metadata": {},
+      "name": "id",
+      "nullable": false,
+      "type": "long"
+    },
+    {
+      "metadata": {},
+      "name": "album_id",
+      "nullable": true,
+      "type": "long"
+    },
+    {
+      "metadata": {},
+      "name": "genre_id",
+      "nullable": true,
+      "type": "long"
+    },
+    {
+      "metadata": {},
+      "name": "operation",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {},
+      "name": "ts_ms",
+      "nullable": true,
+      "type": "long"
+    }
+  ],
+  "type": "struct"
+}
