@@ -1,5 +1,7 @@
 from pyspark.sql import types
 import json
+from pyspark.dbutils import DBUtils
+
 
 dbutils = DBUtils(spark)
 
