@@ -3,6 +3,11 @@ from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, desc, col
 import sys
 
+# dbutils = DBUtils(spark)
+# sys.path.append(f'/Workspace/Users/{dbutils.widgets.get("account")}/music_data_lake/src/lib')
+import utils
+
+
 class GenericIngestor:
     def __init__(self, spark, config):
         self.spark = spark
@@ -15,8 +20,7 @@ class GenericIngestor:
         self.table_path = f"{self.catalog}.{self.schema}.{self.tablename}"
 
     def execute_full_load(self):
-        sys.path.append(f'/Workspace/Users/{dbutils.widgets.get("account")}/music_data_lake/src/lib')
-        import utils
+
         if not utils.table_exists(self.spark, catalog=self.catalog, schema=self.schema, table=self.tablename):
             df_full = self.spark.read.format("parquet").load(f'/Volumes/raw/{self.schema}/full_load/{self.tablename}/')
             df_full.coalesce(1).write.format("delta").mode("overwrite").saveAsTable(self.table_path)
