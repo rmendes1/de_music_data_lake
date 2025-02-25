@@ -1,6 +1,10 @@
 from delta.tables import DeltaTable
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, desc, col
+import sys
+
+sys.path.append(f'/Workspace/Users/{dbutils.widgets.get("account")}/music_data_lake/src/lib')
+import utils
 
 class GenericIngestor:
     def __init__(self, spark, config):
