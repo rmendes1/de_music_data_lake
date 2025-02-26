@@ -1,0 +1,65 @@
+{
+    "fields": [
+      {
+        "metadata": {},
+        "name": "album_id",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "album_title",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "artist_id",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "release_date",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "link",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "cover",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "created_at",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "updated_at",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "operation",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "ts_ms",
+        "nullable": true,
+        "type": "long"
+      }
+    ],
+    "type": "struct"
+  }

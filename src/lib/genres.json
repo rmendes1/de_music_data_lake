@@ -1,0 +1,47 @@
+{
+    "fields": [
+      {
+        "metadata": {},
+        "name": "genre_id",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "genre_name",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "picture_link",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "created_at",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "updated_at",
+        "nullable": true,
+        "type": "long"
+      },
+      {
+        "metadata": {},
+        "name": "operation",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "ts_ms",
+        "nullable": true,
+        "type": "long"
+      }
+    ],
+    "type": "struct"
+  }

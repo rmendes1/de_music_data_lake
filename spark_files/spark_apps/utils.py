@@ -1,36 +1,39 @@
-import json
-from pyspark.sql.types import StructType, StructField, LongType, StringType, IntegerType, TimestampType, DateType
+from pyspark.sql.types import StructType, StructField, LongType, StringType, IntegerType
 
-# Load schemas from JSON file
-with open("/opt/spark/apps/topics_schemas.json", "r") as f:
-    schemas = json.load(f)
 
-# Function to convert schema definition to Spark StructType
-def get_schema_for_topic(topic):
-    schema_def = schemas.get(topic)
-    if not schema_def:
-        raise ValueError(f"Schema not found for topic: {topic}")
+def convert_debezium_schema_to_spark(debezium_schema):
+    """
+    Converte o schema do Debezium para o formato esperado pelo PySpark.
+    """
 
-    fields = []
-    for field in schema_def["fields"]:
-        field_name = field["name"]
+    def parse_field(field):
+        # Mapeia os tipos do Debezium para os tipos do Spark
+        type_mapping = {
+            "int64": LongType(),
+            "string": StringType(),
+            "int32": IntegerType(),
+            "io.debezium.time.Date": IntegerType(),  # Datas são tratadas como inteiros
+            "io.debezium.time.MicroTimestamp": LongType(),  # Timestamps são tratados como longos
+        }
+
         field_type = field["type"]
-        field_nullable = field["nullable"]
-
-        # Map field type to Spark data type
-        if field_type == "long":
-            spark_type = LongType()
-        elif field_type == "string":
-            spark_type = StringType()
-        elif field_type == "integer":
-            spark_type = IntegerType()
-        elif field_type == "timestamp":
-            spark_type = TimestampType()
-        elif field_type == "date":
-            spark_type = DateType()
+        if field_type in type_mapping:
+            return StructField(
+                name=field["field"], dataType=type_mapping[field_type], nullable=field.get("optional", True)
+            )
+        elif field_type == "struct":
+            # Campos aninhados (struct)
+            return StructField(
+                name=field["field"],
+                dataType=StructType([parse_field(f) for f in field["fields"]]),
+                nullable=field.get("optional", True),
+            )
         else:
             raise ValueError(f"Unsupported field type: {field_type}")
 
-        fields.append(StructField(field_name, spark_type, field_nullable))
+    # Extrai os campos do schema do Debezium
+    fields = []
+    for field in debezium_schema["fields"]:
+        fields.append(parse_field(field))
 
     return StructType(fields)
