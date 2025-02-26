@@ -8,10 +8,7 @@
 
  <img alt="Repository size" src="https://img.shields.io/github/repo-size/rmendes1/music_data_lake">
 	
-  
-  <a href="https://github.com/rmendes1/house-rocket/commits/main">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/rmendes1/music_data_lake">
-  </a>
+ <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/rmendes1/music_data_lake">
 
   <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
 </p>
