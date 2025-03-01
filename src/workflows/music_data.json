@@ -7,7 +7,11 @@
     },
     "webhook_notifications": {},
     "timeout_seconds": 0,
-    "max_concurrent_runs": 1,
+    "schedule": {
+      "quartz_cron_expression": "43 0 9 * * ?",
+      "timezone_id": "America/Sao_Paulo",
+      "pause_status": "UNPAUSED"
+    },
     "tasks": [
       {
         "task_key": "bronze_albums",
