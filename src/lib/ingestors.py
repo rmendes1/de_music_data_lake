@@ -6,6 +6,7 @@ import sys
 # dbutils = DBUtils(spark)
 # sys.path.append(f'/Workspace/Users/{dbutils.widgets.get("account")}/music_data_lake/src/lib')
 import utils
+import preprocessing_silver
 
 
 class GenericIngestor:
@@ -49,3 +50,65 @@ class GenericIngestor:
                   .foreachBatch(lambda df, batch_id: self.upsert(df, batch_id))
                   .trigger(availableNow=True))
         return stream
+    
+
+class SilverIngestor(GenericIngestor):
+    def __init__(self, spark, config):
+        super().__init__(spark, config)
+
+        self.id_field_old = config["id_field_old"]
+        self.set_query()
+        self.checkpoint_location = f"/Volumes/raw/{config['schema']}/cdf/postgres.public.{config['tablename']}/{config['tablename']}_checkpoint/"
+
+    def set_query(self):
+        path = f"{self.tablename}.sql"
+        with open(path, "r") as open_file:
+            query = open_file.read()
+        self.from_table = utils.extract_from(query=query)
+        self.original_query = query
+        self.query = utils.format_query_cdf(query, "{df}")
+
+    def load_cdf(self):
+        """Lê os dados da Bronze ativando Change Data Feed (CDF)."""
+        return (self.spark.readStream
+                .format("delta")
+                .option("readChangeFeed", "true")  # Ativa CDF
+                .table(self.from_table))
+    
+    def upsert(self, df, batch_id):
+        # Inicializa DeltaTable
+        deltatable = DeltaTable.forName(self.spark, self.table_path)
+
+        # Aplica transformações de acordo com a tabela
+        df_transformed = preprocessing_silver.transform_data(self.tablename, df)
+
+        # Criar janela para pegar os registros mais recentes por chave primária
+        windowSpec = Window.partitionBy(self.id_field_old).orderBy(col(self.timestamp_field).desc())
+
+        df_cdc = (df_transformed
+                  .withColumn("row_number", row_number().over(windowSpec))
+                  .filter(col("row_number") == 1)  # Pega o registro mais recente por chave primária
+                  .drop("row_number"))
+
+        # Executar MERGE com base no _change_type
+        (deltatable.alias("s")
+             .merge(df_cdc.alias("b"), f"s.{self.primary_key} = b.{self.primary_key}")
+             .whenMatchedDelete(condition="b._change_type = 'delete'")  # Remove registros deletados
+             .whenMatchedUpdateAll(condition="b._change_type = 'update_postimage'")  # Atualiza se for update
+             .whenNotMatchedInsertAll(condition="b._change_type = 'insert' OR b._change_type = 'update_postimage'")  # Insere novos registros
+             .execute())
+        
+    def process_stream(self, df_stream):
+        """
+        Processa os dados em streaming aplicando a função upsert em cada batch.
+        """
+        (df_stream.writeStream
+                 .option("checkpointLocation", f"/Volumes/raw/{self.schema}/cdc/postgres.public.{self.tablename}/{self.tablename}_checkpoint/")
+                 .foreachBatch(lambda df, batch_id: self.upsert(df, batch_id))
+                 .trigger(availableNow=True)
+                 .start())  
+
+    def run(self):
+        """Executa o pipeline Silver com CDF."""
+        df_stream = self.load_cdf()  # Lê as mudanças na Bronze
+        return self.process_stream(df_stream)
