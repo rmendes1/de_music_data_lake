@@ -92,7 +92,7 @@ class SilverIngestor(GenericIngestor):
 
         # Executar MERGE com base no _change_type
         (deltatable.alias("s")
-             .merge(df_cdc.alias("b"), f"s.{self.primary_key} = b.{self.primary_key}")
+             .merge(df_cdc.alias("b"), f"s.{self.primary_key} = b.{self.id_field_old}")
              .whenMatchedDelete(condition="b._change_type = 'delete'")  # Remove registros deletados
              .whenMatchedUpdateAll(condition="b._change_type = 'update_postimage'")  # Atualiza se for update
              .whenNotMatchedInsertAll(condition="b._change_type = 'insert' OR b._change_type = 'update_postimage'")  # Insere novos registros
