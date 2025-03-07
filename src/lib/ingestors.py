@@ -58,7 +58,7 @@ class SilverIngestor(GenericIngestor):
 
         self.id_field_old = config["id_field_old"]
         self.set_query()
-        self.checkpoint_location = f"/Volumes/raw/{config['schema']}/cdf/postgres.public.{config['tablename']}/{config['tablename']}_checkpoint/"
+        self.checkpoint_location = f"/Volumes/raw/{config['schema']}/cdc/postgres.public.{config['tablename']}/{config['tablename']}_checkpoint_silver/"
 
     def set_query(self):
         path = f"{self.tablename}.sql"
@@ -103,7 +103,7 @@ class SilverIngestor(GenericIngestor):
         Processa os dados em streaming aplicando a função upsert em cada batch.
         """
         (df_stream.writeStream
-                 .option("checkpointLocation", f"/Volumes/raw/{self.schema}/cdc/postgres.public.{self.tablename}/{self.tablename}_checkpoint/")
+                 .option("checkpointLocation", self.checkpoint_location)
                  .foreachBatch(lambda df, batch_id: self.upsert(df, batch_id))
                  .trigger(availableNow=True)
                  .start())  
