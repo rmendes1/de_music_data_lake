@@ -83,7 +83,7 @@ class SilverIngestor(GenericIngestor):
         df_transformed = preprocessing_silver.transform_data(self.tablename, df)
 
         # Criar janela para pegar os registros mais recentes por chave primária
-        windowSpec = Window.partitionBy(self.id_field_old).orderBy(col(self.timestamp_field).desc())
+        windowSpec = Window.partitionBy(self.primary_key).orderBy(col(self.timestamp_field).desc())
 
         df_cdc = (df_transformed
                   .withColumn("row_number", row_number().over(windowSpec))
