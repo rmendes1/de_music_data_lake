@@ -61,7 +61,7 @@ class SilverIngestor(GenericIngestor):
         self.checkpoint_location = f"/Volumes/raw/{config['schema']}/cdc/postgres.public.{config['tablename']}/{config['tablename']}_checkpoint_silver/"
 
     def set_query(self):
-        path = f"src/silver/{self.tablename}.sql"
+        path = f"/Workspace/Users/mydatabrickstestacc@gmail.com/music_data_lake/src/silver/{self.tablename}.sql"
         with open(path, "r") as open_file:
             query = open_file.read()
         self.from_table = utils.extract_from(query=query)
