@@ -83,7 +83,7 @@ class SilverIngestor(GenericIngestor):
         df_transformed = preprocessing_silver.transform_data(self.tablename, df)
 
         # Criar janela para pegar os registros mais recentes por chave primária
-        windowSpec = Window.partitionBy(self.primary_key).orderBy(col(self.timestamp_field).desc())
+        windowSpec = Window.partitionBy(self.id_field_old).orderBy(col(self.timestamp_field).desc())
 
         df_cdc = (df_transformed
                   .withColumn("row_number", row_number().over(windowSpec))
@@ -92,7 +92,7 @@ class SilverIngestor(GenericIngestor):
 
         # Executar MERGE com base no _change_type
         (deltatable.alias("s")
-             .merge(df_cdc.alias("b"), f"s.{self.primary_key} = b.{self.id_field_old}")
+             .merge(df_cdc.alias("b"), f"s.{self.primary_key} = b.{self.primary_key}")
              .whenMatchedDelete(condition="b._change_type = 'delete'")  # Remove registros deletados
              .whenMatchedUpdateAll(condition="b._change_type = 'update_postimage'")  # Atualiza se for update
              .whenNotMatchedInsertAll(condition="b._change_type = 'insert' OR b._change_type = 'update_postimage'")  # Insere novos registros
