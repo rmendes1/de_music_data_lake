@@ -32,9 +32,9 @@ def create_job(settings):
     return resp
 
 def main():
-    for i in list_job_names(directory="create"):
-        settings = load_settings(job_name=i, operation="create")
-        resp = create_job(settings=settings)
+    for i in list_job_names(directory="reset"):
+        settings = load_settings(job_name=i, operation="reset")
+        resp = reset_job(settings=settings)
         if resp.status_code == 200:
             print(f"Job '{i}' criado com sucesso!")
         else:
