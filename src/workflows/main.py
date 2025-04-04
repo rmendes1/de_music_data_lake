@@ -13,8 +13,8 @@ def list_job_names(directory):
     return [i.replace(".json", "") for i in os.listdir(f"./{directory}") if i.endswith(".json")]
 
 
-def load_settings(job_name, operation):
-    with open(f"{operation}_{job_name}.json", "r") as open_file:
+def load_settings(job_name):
+    with open(f"{job_name}.json", "r") as open_file:
         settings = json.load(open_file)
     return settings
 
@@ -33,10 +33,10 @@ def create_job(settings):
 
 def main():
     for i in list_job_names(directory="reset"):
-        settings = load_settings(job_name=i, operation="reset")
+        settings = load_settings(job_name=i)
         resp = reset_job(settings=settings)
         if resp.status_code == 200:
-            print(f"Job '{i}' criado com sucesso!")
+            print(f"Job '{i}' processado com sucesso!")
         else:
             print(f"Error: {resp.text}")
 
