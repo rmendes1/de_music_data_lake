@@ -9,12 +9,12 @@ dotenv.load_dotenv(".env")
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
 DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
 
-def list_job_names():
-    return [i.replace(".json", "") for i in os.listdir(".") if i.endswith(".json")]
+def list_job_names(directory):
+    return [i.replace(".json", "") for i in os.listdir(f"./{directory}") if i.endswith(".json")]
 
 
-def load_settings(job_name):
-    with open(f"{job_name}.json", "r") as open_file:
+def load_settings(job_name, operation):
+    with open(f"{operation}_{job_name}.json", "r") as open_file:
         settings = json.load(open_file)
     return settings
 
@@ -25,15 +25,20 @@ def reset_job(settings):
     resp = requests.post(url=url, headers=header, json=settings)
     return resp
 
+def create_job(settings):
+    url = f"https://{DATABRICKS_HOST}/api/2.1/jobs/create"
+    header = {"Authorization": f"Bearer {DATABRICKS_TOKEN}"}
+    resp = requests.post(url=url, headers=header, json=settings)
+    return resp
 
 def main():
-    for i in list_job_names():
-        settings = load_settings(job_name=i)
-        resp = reset_job(settings=settings)
+    for i in list_job_names(directory="create"):
+        settings = load_settings(job_name=i, operation="create")
+        resp = create_job(settings=settings)
         if resp.status_code == 200:
-            print(f"Job '{i}' atualizado com sucesso!")
+            print(f"Job '{i}' criado com sucesso!")
         else:
-            print(f"Não foi possível atualizar o job '{i}'. Error: {resp.text}")
+            print(f"Error: {resp.text}")
 
 if __name__ == "__main__":
     main()
