@@ -45,6 +45,19 @@ services:
       - "-c"
       - "wal_level=logical"
 
+  pgadmin:
+    container_name: pgadmin-music-data-lake
+    networks:
+      - project_network
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .env.pgadmin
+    volumes:
+      - ./pg_admin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
