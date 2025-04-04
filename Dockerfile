@@ -27,7 +27,7 @@ RUN curl https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoo
  && tar xvzf spark-3.3.1-bin-hadoop3.tgz --directory /opt/spark --strip-components 1 \
  && rm -rf spark-3.3.1-bin-hadoop3.tgz
 
-COPY requirements/requirements.txt .
+COPY spark_files/requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY cred_key_gcloud.json /tmp/cred_key_gcloud.json
@@ -47,9 +47,9 @@ ENV SPARK_MASTER_PORT 7077
 ENV PYSPARK_PYTHON python3
 ENV SPARK_CONF_DIR=$SPARK_HOME/conf
 
-COPY jars/postgresql-42.6.2.jar $SPARK_HOME/jars
+COPY spark_files/jars/postgresql-42.6.2.jar $SPARK_HOME/jars
 
-COPY conf/spark-defaults.conf "$SPARK_CONF_DIR"
+COPY spark_files/conf/spark-defaults.conf "$SPARK_CONF_DIR"
 RUN echo "spark.hadoop.google.cloud.auth.service.account.enable true" >> $SPARK_CONF_DIR/spark-defaults.conf
 RUN echo "spark.hadoop.google.cloud.auth.service.account.json.keyfile $GOOGLE_APPLICATION_CREDENTIALS" >> $SPARK_CONF_DIR/spark-defaults.conf
 RUN echo "spark.hadoop.fs.gs.impl com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem" >> $SPARK_CONF_DIR/spark-defaults.conf
