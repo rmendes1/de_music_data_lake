@@ -7,6 +7,7 @@ env_path = Path(__file__).parent / '.env'
 dotenv.load_dotenv(env_path)
 
 DB_URL = os.getenv("DB_URL")
+DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
