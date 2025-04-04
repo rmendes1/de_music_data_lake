@@ -1,5 +1,5 @@
 {
-  "job_id": 361416952349197,
+  "job_id": 87524605246314,
   "new_settings": {
     "name": "music_data",
     "email_notifications": {
@@ -7,11 +7,6 @@
     },
     "webhook_notifications": {},
     "timeout_seconds": 0,
-    "schedule": {
-      "quartz_cron_expression": "43 0 9 * * ?",
-      "timezone_id": "America/Sao_Paulo",
-      "pause_status": "UNPAUSED"
-    },
     "max_concurrent_runs": 1,
     "tasks": [
       {
@@ -23,13 +18,13 @@
             "catalog": "bronze",
             "schema": "music_data",
             "tablename": "albums",
-            "account": "mydatabrickstestacc@gmail.com",
+            "account": "mydatabrickstestacc2@gmail.com",
             "timestamp_field": "ts_ms",
             "primary_key": "album_id"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -43,13 +38,13 @@
             "catalog": "bronze",
             "schema": "music_data",
             "tablename": "albums_genres",
-            "account": "mydatabrickstestacc@gmail.com",
+            "account": "mydatabrickstestacc2@gmail.com",
             "timestamp_field": "ts_ms",
             "primary_key": "id"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -63,13 +58,13 @@
             "catalog": "bronze",
             "schema": "music_data",
             "tablename": "artists",
-            "account": "mydatabrickstestacc@gmail.com",
+            "account": "mydatabrickstestacc2@gmail.com",
             "timestamp_field": "ts_ms",
             "primary_key": "artist_id"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -83,13 +78,13 @@
             "catalog": "bronze",
             "schema": "music_data",
             "tablename": "genres",
-            "account": "mydatabrickstestacc@gmail.com",
+            "account": "mydatabrickstestacc2@gmail.com",
             "timestamp_field": "ts_ms",
             "primary_key": "genre_id"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -103,13 +98,13 @@
             "catalog": "bronze",
             "schema": "music_data",
             "tablename": "tracks",
-            "account": "mydatabrickstestacc@gmail.com",
+            "account": "mydatabrickstestacc2@gmail.com",
             "timestamp_field": "ts_ms",
             "primary_key": "track_id"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -129,7 +124,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -149,7 +144,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -169,7 +164,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -189,7 +184,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -209,7 +204,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -217,7 +212,7 @@
     ],
     "job_clusters": [
       {
-        "job_cluster_key": "Joao_Job_cluster",
+        "job_cluster_key": "Job_cluster",
         "new_cluster": {
           "cluster_name": "",
           "spark_version": "15.4.x-scala2.12",
@@ -246,7 +241,7 @@
       "enabled": true
     },
     "run_as": {
-      "user_name": "mydatabrickstestacc@gmail.com"
+      "user_name": "mydatabrickstestacc2@gmail.com"
     }
   }
 }
