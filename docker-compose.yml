@@ -132,9 +132,8 @@ services:
     networks:
       - project_network
 
-
   spark-master:
-    container_name: ingestao-spark-master
+    container_name: spark-master
     build: .
     image: bitnami/spark:3.4.0
     entrypoint: [ './entrypoint.sh', 'master' ]
@@ -147,8 +146,8 @@ services:
       retries: 3
     volumes:
       - ./book_data:/opt/spark/data
-      - ./spark_apps:/opt/spark/apps
-      - spark-logs:/opt/spark/spark-events
+      - ./spark_files/spark_apps:/opt/spark/apps
+      - ./spark_logs:/opt/spark/spark-events
     env_file:
       - .env.spark
     ports:
@@ -157,7 +156,7 @@ services:
 
 
   spark-history-server:
-    container_name: ingestao-spark-history
+    container_name: spark-history
     image: bitnami/spark:3.4.0
     entrypoint: [ './entrypoint.sh', 'history' ]
     networks:
@@ -167,12 +166,12 @@ services:
     env_file:
       - .env.spark
     volumes:
-      - spark-logs:/opt/spark/spark-events
+      - ./spark_logs:/opt/spark/spark-events
     ports:
       - '18080:18080'
 
   spark-worker:
-    #    container_name: da-spark-worker
+    container_name: spark-worker
     image: bitnami/spark:3.4.0
     entrypoint: [ './entrypoint.sh', 'worker' ]
     networks:
@@ -183,8 +182,9 @@ services:
       - .env.spark
     volumes:
       - ./book_data:/opt/spark/data
-      - ./spark_apps:/opt/spark/apps
-      - spark-logs:/opt/spark/spark-events
+      - ./spark_files/spark_apps:/opt/spark/apps
+      - ./spark_logs:/opt/spark/spark-events
 
 volumes:
-  spark-logs:
+  zk-data:
+  zk-datalog:
