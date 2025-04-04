@@ -113,6 +113,15 @@ ALTER TABLE Albums_Genres
 ALTER COLUMN album_id TYPE BIGINT,
 ALTER COLUMN genre_id TYPE BIGINT;
 
+-- Configs do Debezium
+CREATE PUBLICATION dbz_publication FOR TABLE Artists, Genres, Albums, Albums_Genres, Tracks;
+SELECT * FROM pg_replication_slots WHERE slot_name = 'debezium';
+ALTER TABLE Tracks REPLICA IDENTITY FULL;
+ALTER TABLE Albums_Genres REPLICA IDENTITY FULL;
+ALTER TABLE Albums REPLICA IDENTITY FULL;
+ALTER TABLE Artists REPLICA IDENTITY FULL;
+ALTER TABLE Genres REPLICA IDENTITY FULL;
+
 -- Removendo PK composta para adicionar id serial
 ALTER TABLE Albums_Genres ADD COLUMN id SERIAL;
 ALTER TABLE Albums_Genres DROP CONSTRAINT albums_genres_pkey;
