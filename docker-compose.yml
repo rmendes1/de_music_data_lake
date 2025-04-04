@@ -59,9 +59,13 @@ services:
       - "5050:80"
 
   zookeeper:
+    container_name: zookeeper
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    volumes:
+      - zk-data:/data
+      - zk-datalog:/datalog
     networks:
       - project_network
 
