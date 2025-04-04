@@ -13,8 +13,9 @@ services:
       options:
         max-size: "500m"
     image: postgres:14.1
+    env_file:
+      - .env.postgres
     environment:
-      POSTGRES_PASSWORD:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
         - ./pg_data:/var/lib/postgresql/data/pgdata
@@ -70,16 +71,10 @@ services:
       - project_network
 
   debezium:
+    container_name: debezium
     image: debezium/connect:1.4
-    environment:
-      BOOTSTRAP_SERVERS: kafka:9092
-      GROUP_ID: 1
-      CONFIG_STORAGE_TOPIC: connect_configs
-      OFFSET_STORAGE_TOPIC: connect_offsets
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    env_file:
+      - .env.debezium
     depends_on: [ kafka, schema-registry ]
     ports:
       - 8083:8083

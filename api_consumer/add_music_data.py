@@ -3,14 +3,15 @@ import psycopg2
 import time
 from psycopg2 import sql
 import sys
+from spark_files.spark_apps.config import DB_USER, DB_PASSWORD
 
 # Database configuration
 DB_CONFIG = {
     "dbname": "music_data",
-    "user": "",
-    "password": "",
-    "host": "",
-    "port": ""
+    "user": DB_USER,
+    "password": DB_PASSWORD,
+    "host": "localhost",
+    "port": "5432"
 }
 
 # Initialize the Deezer API client

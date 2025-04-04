@@ -1,7 +1,14 @@
 # Banco de Dados
-DB_URL = ''
-DB_USER = ''
-DB_PASSWORD = ''
+import os
+from pathlib import Path
+import dotenv
+
+env_path = Path(__file__).parent / '.env'
+dotenv.load_dotenv(env_path)
+
+DB_URL = os.getenv("DB_URL")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 # Kafka
 KAFKA_BROKER = "kafka:9092"
@@ -14,4 +21,4 @@ KAFKA_TOPICS_TABLES = {
 }
 
 # Google Cloud Storage
-GCS_BUCKET = ''
+GCS_BUCKET = os.getenv("GCS_BUCKET")
