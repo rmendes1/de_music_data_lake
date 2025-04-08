@@ -79,8 +79,7 @@ class SilverIngestor(GenericIngestor):
         """Lê os dados da Bronze ativando Change Data Feed (CDF)."""
         return (self.spark.readStream
                 .format("delta")
-                .option("readChangeFeed", "true")
-                .option("startingVersion", 0)  # Ativa CDF
+                .option("readChangeFeed", "true") # Ativa CDF
                 .table(self.from_table))
     
     def upsert(self, df):
