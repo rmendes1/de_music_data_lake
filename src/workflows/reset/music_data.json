@@ -24,7 +24,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -44,7 +44,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -64,7 +64,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -84,7 +84,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -104,27 +104,7 @@
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
-        "timeout_seconds": 0,
-        "email_notifications": {},
-        "webhook_notifications": {}
-      },
-      {
-        "task_key": "silver_tracks",
-        "depends_on": [
-          {
-            "task_key": "bronze_tracks"
-          }
-        ],
-        "run_if": "ALL_SUCCESS",
-        "notebook_task": {
-          "notebook_path": "src/silver/ingestion",
-          "base_parameters": {
-            "tablename": "tracks"
-          },
-          "source": "GIT"
-        },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -140,51 +120,17 @@
         "notebook_task": {
           "notebook_path": "src/silver/ingestion",
           "base_parameters": {
-            "tablename": "albums"
+            "id_field_old": "album_id",
+            "catalog": "silver",
+            "schema": "music_data",
+            "tablename": "albums",
+            "account": "mydatabrickstestacc2@gmail.com",
+            "timestamp_field": "_commit_timestamp",
+            "primary_key": "albumId"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
-        "timeout_seconds": 0,
-        "email_notifications": {},
-        "webhook_notifications": {}
-      },
-      {
-        "task_key": "silver_genres",
-        "depends_on": [
-          {
-            "task_key": "bronze_genres"
-          }
-        ],
-        "run_if": "ALL_SUCCESS",
-        "notebook_task": {
-          "notebook_path": "src/silver/ingestion",
-          "base_parameters": {
-            "tablename": "genres"
-          },
-          "source": "GIT"
-        },
-        "job_cluster_key": "Job_cluster",
-        "timeout_seconds": 0,
-        "email_notifications": {},
-        "webhook_notifications": {}
-      },
-      {
-        "task_key": "silver_artists",
-        "depends_on": [
-          {
-            "task_key": "bronze_artists"
-          }
-        ],
-        "run_if": "ALL_SUCCESS",
-        "notebook_task": {
-          "notebook_path": "src/silver/ingestion",
-          "base_parameters": {
-            "tablename": "artists"
-          },
-          "source": "GIT"
-        },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
@@ -200,42 +146,104 @@
         "notebook_task": {
           "notebook_path": "src/silver/ingestion",
           "base_parameters": {
-            "tablename": "albums_genres"
+            "tablename": "albums_genres",
+            "id_field_old": "id",
+            "catalog": "silver",
+            "schema": "music_data",
+            "account": "mydatabrickstestacc2@gmail.com",
+            "timestamp_field": "_commit_timestamp",
+            "primary_key": "albumGenreId"
           },
           "source": "GIT"
         },
-        "job_cluster_key": "Job_cluster",
+        "existing_cluster_id": "5404-160837-76p53u7c",
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "webhook_notifications": {}
+      },
+      {
+        "task_key": "silver_artists",
+        "depends_on": [
+          {
+            "task_key": "bronze_artists"
+          }
+        ],
+        "run_if": "ALL_SUCCESS",
+        "notebook_task": {
+          "notebook_path": "src/silver/ingestion",
+          "base_parameters": {
+            "tablename": "artists",
+            "id_field_old": "artist_id",
+            "catalog": "silver",
+            "schema": "music_data",
+            "account": "mydatabrickstestacc2@gmail.com",
+            "timestamp_field": "_commit_timestamp",
+            "primary_key": "artistId"
+          },
+          "source": "GIT"
+        },
+        "existing_cluster_id": "5404-160837-76p53u7c",
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "webhook_notifications": {}
+      },
+      {
+        "task_key": "silver_genres",
+        "depends_on": [
+          {
+            "task_key": "bronze_genres"
+          }
+        ],
+        "run_if": "ALL_SUCCESS",
+        "notebook_task": {
+          "notebook_path": "src/silver/ingestion",
+          "base_parameters": {
+            "tablename": "genres",
+            "id_field_old": "genre_id",
+            "catalog": "silver",
+            "schema": "music_data",
+            "account": "mydatabrickstestacc2@gmail.com",
+            "timestamp_field": "_commit_timestamp",
+            "primary_key": "genreId"
+          },
+          "source": "GIT"
+        },
+        "existing_cluster_id": "5404-160837-76p53u7c",
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "webhook_notifications": {}
+      },
+      {
+        "task_key": "silver_tracks",
+        "depends_on": [
+          {
+            "task_key": "bronze_tracks"
+          }
+        ],
+        "run_if": "ALL_SUCCESS",
+        "notebook_task": {
+          "notebook_path": "src/silver/ingestion",
+          "base_parameters": {
+            "tablename": "tracks",
+            "id_field_old": "track_id",
+            "catalog": "silver",
+            "schema": "music_data",
+            "account": "mydatabrickstestacc2@gmail.com",
+            "timestamp_field": "_commit_timestamp",
+            "primary_key": "trackId"
+          },
+          "source": "GIT"
+        },
+        "existing_cluster_id": "5404-160837-76p53u7c",
         "timeout_seconds": 0,
         "email_notifications": {},
         "webhook_notifications": {}
       }
     ],
-    "job_clusters": [
-      {
-        "job_cluster_key": "Job_cluster",
-        "new_cluster": {
-          "cluster_name": "",
-          "spark_version": "15.4.x-scala2.12",
-          "gcp_attributes": {
-            "use_preemptible_executors": true,
-            "availability": "PREEMPTIBLE_WITH_FALLBACK_GCP",
-            "zone_id": "HA"
-          },
-          "node_type_id": "n2-highmem-2",
-          "spark_env_vars": {
-            "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-          },
-          "enable_elastic_disk": false,
-          "data_security_mode": "SINGLE_USER",
-          "runtime_engine": "STANDARD",
-          "num_workers": 2
-        }
-      }
-    ],
     "git_source": {
       "git_url": "https://github.com/rmendes1/music_data_lake",
       "git_provider": "gitHub",
-      "git_branch": "main"
+      "git_branch": "feat/bronze_to_silver"
     },
     "queue": {
       "enabled": true
