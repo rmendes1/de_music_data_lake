@@ -55,45 +55,51 @@ class GenericIngestor:
 class SilverIngestor(GenericIngestor):
     def __init__(self, spark, config):
         super().__init__(spark, config)
-        self.set_deltatable()
+        self.account = config["account"]
         self.id_field_old = config["id_field_old"]
         self.set_query()
         self.checkpoint_location = f"/Volumes/raw/{config['schema']}/cdc/postgres.public.{config['tablename']}/{config['tablename']}_checkpoint_silver/"
 
     def set_deltatable(self):
         tablename = f"{self.catalog}.{self.schema}.{self.tablename}"
-        self.deltatable = DeltaTable.forName(self.spark, tablename)
+        print(f"tablename -> {tablename}")
+        deltatable = DeltaTable.forName(self.spark, tablename)
+        return deltatable
 
     def set_query(self):
-        path = f"/Workspace/Users/mydatabrickstestacc@gmail.com/music_data_lake/src/silver/{self.tablename}.sql"
+        path = f"/Workspace/Users/{self.account}/music_data_lake/src/silver/{self.tablename}.sql"
+
         with open(path, "r") as open_file:
             query = open_file.read()
         self.from_table = utils.extract_from(query=query)
         self.original_query = query
-        self.query = utils.format_query_cdf(query, self.from_table)
+        self.query = utils.format_query_cdf(query, "{df}")
 
     def load_cdf(self):
         """Lê os dados da Bronze ativando Change Data Feed (CDF)."""
         return (self.spark.readStream
                 .format("delta")
-                .option("readChangeFeed", "true")  # Ativa CDF
-                .table(self.from_table)).filter("_change_type IN ('update_preimage', 'update_postimage', 'delete')")
+                .option("readChangeFeed", "true")
+                .option("startingVersion", 0)  # Ativa CDF
+                .table(self.from_table))
     
     def upsert(self, df):
+        deltatable = self.set_deltatable()
 
-        df = df.filter(col("_change_type") != "update_preimage")
+        df.createOrReplaceGlobalTempView(f"silver_{self.tablename}")
 
-        # Criar janela para pegar os registros mais recentes por chave primária
-        windowSpec = Window.partitionBy(self.id_field_old).orderBy(col(self.timestamp_field).desc())
-
-        df_upsert = (df
-                  .withColumn("row_number", row_number().over(windowSpec))
-                  .filter(col("row_number") == 1)  # Pega o registro mais recente por chave primária
-                  .drop("row_number"))
+        query_last = f"""
+        SELECT *
+        FROM global_temp.silver_{self.tablename}
+        WHERE _change_type <> 'update_preimage'
+        QUALIFY ROW_NUMBER() OVER (PARTITION BY {self.id_field_old} ORDER BY _commit_timestamp DESC) = 1
+        """
+        df_last = self.spark.sql(query_last)
+        df_upsert = self.spark.sql(self.query, df=df_last)
 
         # Executar MERGE com base no _change_type
-        (self.deltatable.alias("s")
-             .merge(df_upsert.alias("d"), f"s.{self.primary_key} = d.{self.id_old_field}")
+        (deltatable.alias("s")
+             .merge(df_upsert.alias("d"), f"s.{self.primary_key} = d.{self.primary_key}")
              .whenMatchedDelete(condition="d._change_type = 'delete'")  # Remove registros deletados
              .whenMatchedUpdateAll(condition="d._change_type = 'update_postimage'")  # Atualiza se for update
              .whenNotMatchedInsertAll(condition="d._change_type = 'insert' OR d._change_type = 'update_postimage'")  # Insere novos registros
@@ -103,7 +109,7 @@ class SilverIngestor(GenericIngestor):
         """
         Processa os dados em streaming aplicando a função upsert em cada batch.
         """
-        (df.writeStream
+        return (df.writeStream
                  .option("checkpointLocation", self.checkpoint_location)
                  .foreachBatch(lambda df, batch_id: self.upsert(df))
                  .trigger(availableNow=True)
@@ -113,4 +119,3 @@ class SilverIngestor(GenericIngestor):
         """Executa o pipeline Silver com CDF."""
         df_stream = self.load_cdf()  # Lê as mudanças na Bronze
         return self.process_stream(df_stream)
-    
