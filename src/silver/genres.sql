@@ -1,4 +1,4 @@
-SELECT DISTINCT genre_id AS genreId,
+SELECT genre_id AS genreId,
        genre_name AS genreName,
        picture_link AS genrePictureUrl,
        created_at AS createdAt,

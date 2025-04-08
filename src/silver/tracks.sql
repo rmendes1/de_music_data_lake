@@ -1,4 +1,4 @@
-SELECT DISTINCT track_id AS trackId,
+SELECT track_id AS trackId,
        track_title AS trackTitle,
        album_id AS albumId,
        artist_id AS artistId,

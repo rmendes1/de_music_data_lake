@@ -1,4 +1,4 @@
-SELECT DISTINCT artist_id AS artistId,
+SELECT artist_id AS artistId,
        artist_name AS artistName,
        link AS link, 
        followers AS followers,
