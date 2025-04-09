@@ -96,9 +96,11 @@ class SilverIngestor(GenericIngestor):
         df_last = self.spark.sql(query_last)
         df_upsert = self.spark.sql(self.query, df=df_last)
 
+        df_processed = preprocessing_silver.transform_data(self.tablename, df_upsert)
+
         # Executar MERGE com base no _change_type
         (deltatable.alias("s")
-             .merge(df_upsert.alias("d"), f"s.{self.primary_key} = d.{self.primary_key}")
+             .merge(df_processed.alias("d"), f"s.{self.primary_key} = d.{self.primary_key}")
              .whenMatchedDelete(condition="d._change_type = 'delete'")  # Remove registros deletados
              .whenMatchedUpdateAll(condition="d._change_type = 'update_postimage'")  # Atualiza se for update
              .whenNotMatchedInsertAll(condition="d._change_type = 'insert' OR d._change_type = 'update_postimage'")  # Insere novos registros
