@@ -80,6 +80,7 @@ class SilverIngestor(GenericIngestor):
         return (self.spark.readStream
                 .format("delta")
                 .option("readChangeFeed", "true") # Ativa CDF
+                .option("startingVersion", 0)  # Add this for first-run or full-reprocessing
                 .table(self.from_table))
     
     def upsert(self, df):
