@@ -1,16 +1,16 @@
 from pyspark.sql.functions import col, when, trim, lower, year, month
-
+import pandas as pd
 
 def transform_artists(df):
-    return (df.withColumn("artist_name", trim(col("artist_name")))
-            .withColumn("is_active", when(col("followers") > 0, True).otherwise(False)))
+    return (df.withColumn("artistName", trim(col("artistName")))
+            .withColumn("isActive", when(col("followers") > 0, True).otherwise(False)))
 
 
 def transform_albums(df):
     return (
-        df.withColumn("release_date", when(col("release_date") >= "1900-01-01", col("release_date")).otherwise(None))
-        .withColumn("year", year(col("release_date")))
-        .withColumn("month", month(col("release_date"))))
+        df.withColumn("releaseDate", when(col("releaseDate") >= "1900-01-01", col("releaseDate")).otherwise(None))
+        .withColumn("year", year(col("releaseDate")))
+        .withColumn("month", month(col("releaseDate"))))
 
 
 def transform_tracks(df):
@@ -20,7 +20,7 @@ def transform_tracks(df):
 
 
 def transform_genres(df):
-    return df.withColumn("genre_name", lower(trim(col("genre_name"))))
+    return df.withColumn("genreName", lower(trim(col("genreName"))))
 
 
 # Dicionário para mapear as transformações por tabela
