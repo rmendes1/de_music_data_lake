@@ -106,7 +106,7 @@ for topic in topics:
         # Salva os dados particionados
         if cdc_unified_df.count() > 0:
             logger.info(f"Salvando dados na landing zone para {topic}...")
-            cdc_unified_df.write.format("parquet").mode("append").save(f"{GCS_BUCKET}/{topic}/")
+            cdc_unified_df.write.format("parquet").mode("append").save(f"{GCS_BUCKET}/cdc/{topic}/")
 
         max_offset = df.selectExpr("max(offset)").collect()[0][0]
         if max_offset is not None:

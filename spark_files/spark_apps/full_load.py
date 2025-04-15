@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 import logging
 from writer import save_to_parquet
-from config import DB_URL, DB_USER, DB_PASSWORD
+from config import DB_URL, DB_USER, DB_PASSWORD, GCS_BUCKET
 
 
 # Configura o logging
@@ -40,7 +40,7 @@ def ingest_full_table(table):
         df.printSchema()
         logger.info(f"N rows: {df.count()}")
 
-        gcs_output_path = f"gs://landing_zone_buck/music_data/full_load/{table}"
+        gcs_output_path = f"{GCS_BUCKET}/full_load/{table}"
         save_to_parquet(df, gcs_output_path, write_mode="overwrite")
 
     except Exception as e:

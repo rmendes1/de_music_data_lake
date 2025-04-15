@@ -7,3 +7,4 @@ google-cloud-storage
 kafka-python
 psycopg2
 delta-spark
+dotenv

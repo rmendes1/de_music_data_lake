@@ -1,6 +1,6 @@
 import psycopg2
 from psycopg2.extras import DictCursor
-from config import DB_USER, DB_PASSWORD
+from config import DB_USER, DB_HOST, DB_PASSWORD
 
 # Função para carregar o último offset de um tópico e partição
 def load_last_offset(topic, partition):
@@ -10,7 +10,7 @@ def load_last_offset(topic, partition):
             dbname="music_data",
             user=DB_USER,
             password=DB_PASSWORD,
-            host="db"
+            host=DB_HOST
         ) as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute("""
@@ -31,7 +31,7 @@ def save_last_offset(topic, partition, offset):
             dbname="music_data",
             user=DB_USER,
             password=DB_PASSWORD,
-            host=""
+            host=DB_HOST
         ) as conn:
             with conn.cursor() as cursor:
                 cursor.execute("""
