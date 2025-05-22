@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: dim_albums
+    description: "Albums dimension"
+    columns:
+      - name: album_sk
+        tests:
+          - unique
+          - not_null
+      - name: albumId
+        tests:
+          - unique
+          - not_null
+      - name: albumTitle
+        tests:
+          - not_null
+      - name: artistId
+        tests:
+          - not_null

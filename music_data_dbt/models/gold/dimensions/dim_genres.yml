@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: dim_genres
+    description: "Genre's dimension"
+    columns:
+      - name: genre_sk
+        tests:
+          - unique
+          - not_null
+      - name: genreId
+        tests:
+          - unique
+          - not_null
+      - name: genreName
+        tests:
+          - not_null
