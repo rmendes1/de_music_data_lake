@@ -13,8 +13,6 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
 </p>
 
-# Music Data Lake
-
 ## Description
 The **Music Data Lake** is a project focused on collecting, processing, and analyzing music data. It leverages technologies such as Apache Spark, Docker, and Debezium to handle large volumes of data and enable scalable analytics. The project includes full load and change data capture (CDC) ingestion into Databricks, organizing data into `raw` and `bronze` catalogs. Additionally, Apache Kafka is used to create Debezium topics and manage the consumer that retrieves CDC data for ingestion into the bucket.
 
