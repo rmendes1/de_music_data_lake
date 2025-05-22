@@ -25,7 +25,8 @@ The **Music Data Lake** is a project focused on collecting, processing, and anal
 - **Apache Kafka** - Message broker for CDC data streaming.
 - **PostgreSQL** - Structured data storage.
 - **Google Cloud Storage (GCS)** - Storage for full load and CDC ingestion.
-- **Databricks** - Data processing and management using `raw` and `bronze` catalogs.
+- **Databricks** - Data processing and management using `raw`, `bronze`, and `silver` catalogs.
+- **dbt Core** - Dimensional data modelling for `gold` layer + integrity tests.
 - **Music APIs** - Data collection from external services.
 
 ## Current Architecture
@@ -35,11 +36,14 @@ The project is still under development. But we can already see the road so far
 ## Project Structure
 ```
 /music_data_lake
+├── .github/workflows/   # CI/CD for Databricks Workflows
 │── api_consumer/        # Scripts for consuming music APIs
+├── music_data_dbt/      # dbt project for dimensional modeling (Gold Layer)
 │── queries/             # SQL queries for data extraction and analysis
 │── spark_files/         # Extraction structure and ingestion scripts for full load and CDC into GCS
 │── src/                 # Core ingestion logic for Databricks
 │   ├── bronze/          # Handles ingestion into the `bronze` catalog
+│   ├── silver/          # Handles ingestion into the `silver` catalog
 │   ├── lib/             # Utility functions and libraries for processing
 │── Dockerfile           # Docker container configuration
 │── docker-compose.yml   # Service orchestration with Docker Compose
@@ -61,6 +65,65 @@ The project is still under development. But we can already see the road so far
    - Extraction and ingestion logic is in `spark_files/`
    - Data ingestion into Databricks (`raw` and `bronze`) is handled in `src/`
    - Kafka topics and CDC consumer scripts are managed in `debezium.json` and in `spark_files/spark_apps/manage_offset.py`
+
+4. Gold Layer (Dimensional Modeling with dbt)
+
+	The `music_data_dbt` directory houses the dbt project responsible for the Gold Layer. This layer implements a dimensional modeling approach, creating fact and dimension tables to facilitate efficient querying and analysis.
+	
+	Key features include:
+	
+	- **Fact Tables**: Capture measurable events such as song plays, user interactions, etc.
+	- **Dimension Tables**: Provide context to facts, including information about artists, albums, users, and time.
+	- **dbt Models**: Modular SQL models that define the transformations from staging to gold layer.
+	- **Testing and Documentation**: dbt's built-in testing and documentation features ensure data quality and clarity.
+	
+	```text
+						          +----------------+
+						          |  dim_artists   |
+						          +----------------+
+						                  |
+						                  v
+						          +----------------+
+						          |  dim_albums    |
+						          +----------------+
+						                  |
+						                  v
+						        +---------------------+
+						        | bridge_album_genre  |
+						        +---------------------+
+						         ^                 ^
+						         |                 |
+						+----------------+   +----------------+
+						|  dim_genres    |   |  fact_tracks   |
+						+----------------+   +----------------+
+	```
+	
+	**Component Description**
+	
+	- `dim_artists`: One record per artist, containing artist attributes.
+	- `dim_albums`: One record per album, including album attributes and a foreign key to the artist.
+	- `dim_genres`: One record per genre.
+	- `bridge_album_genre`: Links each album to all associated genres (many-to-many relationship).
+	- `fact_tracks`: One record per track, with foreign keys to album and artist (does not include genre directly).
+	
+	**Relationships Structure**
+	
+	- `fact_tracks` references `dim_albums` and `dim_artists`.
+	- `dim_albums` references `dim_artists` (one-to-many).
+	- `bridge_album_genre` creates a **many-to-many** relationship between `dim_albums` and `dim_genres`.
+	
+	To perform genre-based analysis, you should join:
+	`fact_tracks` → `dim_albums` → `bridge_album_genre` → `dim_genres`
+	
+	Note: You can connect `fact_tracks` to `dim_albums` and, through the bridge, reach `dim_genres` for genre-level analysis.
+	
+	To work with the dbt project:
+	
+	1. Navigate to the `music_data_dbt` directory.
+	2. Install dependencies: `dbt deps`
+	3. Run models: `dbt run`
+	4. Test models: `dbt test`
+	5. Generate documentation: `dbt docs generate` and view it with `dbt docs serve`
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
