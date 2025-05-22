@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fact_tracks
+    description: "Tracks' fact table"
+    columns:
+      - name: track_sk
+        tests:
+          - unique
+          - not_null
+      - name: trackId
+        tests:
+          - unique
+          - not_null
+      - name: artist_sk
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_artists')
+              field: artist_sk
+      - name: album_sk
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_albums')
+              field: album_sk

@@ -1,0 +1,13 @@
+columns:
+  - name: album_sk
+    tests:
+      - not_null
+      - relationships:
+          to: ref('dim_albums')
+          field: album_sk
+  - name: genre_sk
+    tests:
+      - not_null
+      - relationships:
+          to: ref('dim_genres')
+          field: genre_sk

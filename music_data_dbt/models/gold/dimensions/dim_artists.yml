@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: dim_artists
+    description: "Artist's dimension"
+    columns:
+      - name: artist_sk
+        description: "Artist's surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: artistId
+        description: "Artist's natural key"
+        tests:
+          - unique
+          - not_null
+      - name: artistName
+        description: "Artist's name"
+        tests:
+          - not_null

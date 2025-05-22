@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: silver
+    database: silver
+    schema: music_data
+    tables:
+      - name: artists
+      - name: albums
+      - name: genres
+      - name: albums_genres
+      - name: tracks
+  - name: bronze
+    database: bronze
+    schema: music_data
+    tables:
+      - name: artists
+      - name: albums
+      - name: genres
+      - name: albums_genres
+      - name: tracks
