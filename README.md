@@ -30,9 +30,7 @@ The **Music Data Lake** is a project focused on collecting, processing, and anal
 
 ## Current Architecture
 The project is still under development. But we can already see the road so far
-<h1 align="center">
-    <img alt="MusicDataImg" title="#MusicData" src="cdc_ingestion.drawio.png" />
-</h1>
+![design image](cdc_ingestion.drawio.png)
 
 ## Project Structure
 ```
