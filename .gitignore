@@ -169,3 +169,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+/.env.spark
+/.env.debezium
+/.env.pgadmin
+/.env.postgres
+/spark_logs/
